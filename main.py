@@ -145,56 +145,7 @@ def callback():
     canvas.show()
     canvas.get_tk_widget().place(relx=0.52, rely=0.12)#pack(side=TOP, fill=BOTH, expand=1)
     canvas._tkcanvas.place(relx=0.52, rely=0.12)#pack(side=TOP, fill=BOTH, expand=1)
-    #--------------------------------------------------------------------------скрытое размещение дирихле
-    w8=Label(window,text=u"ОСНОВНЫЕ ТЕМЫ И СЛОВА", font = "Times")
-    w8.place(relx=0.17, rely=0.53)
-    t8=Text(window, height=24, width=75)
-    t8.place(relx=0.01, rely=0.57)
-    texts = []
-    stopped_tokens = [i for i in total_word if not i in en_stop]
-    #print len(stopped_tokens)
-    p_stemmer = PorterStemmer()
-    stemmed_tokens = [p_stemmer.stem(i) for i in stopped_tokens]
-    #print len(stemmed_tokens), stemmed_tokens
-    texts.append(stemmed_tokens)
-    dictionary = corpora.Dictionary(texts)
-    corpus = [dictionary.doc2bow(text) for text in texts]
-    ldamodel = gensim.models.LdaModel(corpus, num_topics=100, id2word = dictionary, passes=20)
-    a=ldamodel.print_topics(num_topics=10, num_words=7)
-    #print ldamodel.print_topics(num_topics=4, num_words=7)[0][1]
-    #print a
-    num_topics = 15
-    topic_words = []
-    for i in range(num_topics):
-        tt = ldamodel.get_topic_terms(i,15)
-        topic_words.append([dictionary[pair[0]] for pair in tt])
-    #print topic_words[0]
-    jj=0
-    while jj<len(topic_words):
-        topic11=((u"Тема #%d:" % (jj+1))+"\n"+"-".join(topic_words[jj])+"\n")
-        t8.insert(END, topic11)
-        #print(u"Тема #%d:" % (jj+1))
-        #print("-".join(topic_words[jj]))
-        jj=jj+1    
-    #--------------------------------------------------------------------------определение основных тем
-    vec = TfidfVectorizer(stop_words='english', ngram_range=(1,2), max_df=.5)
-    tfv = vec.fit_transform(stopped_tokens)
-    terms = vec.get_feature_names()
-    #print type(terms)
-    wc = WordCloud(height=1000, width=1000, max_words=1000).generate(" ".join(terms))
-    nmf = NMF(n_components=11).fit(tfv)
-    #for idx, topic in enumerate(nmf.components_):
-        #print(u"Тема #%d:" % (idx+1))
-        #print(" ".join([terms[i] for i in topic.argsort()[:-10 - 1:-1]]))
-    #--------------------------------------------------------------------------рисунок распределения терминов
-    w8=Label(window,text=u"РАСПРЕДЕЛЕНИЕ СЛОВ", font = "Times")
-    w8.place(relx=0.66, rely=0.53)
-    fig = plt.figure(figsize=(6,4))
-    im = plt.imshow(wc)
-    canvas = FigureCanvasTkAgg(fig, master=window)
-    canvas.show()
-    canvas.get_tk_widget().place(relx=0.52, rely=0.57)#pack(side=TOP, fill=BOTH, expand=1)
-    canvas._tkcanvas.place(relx=0.52, rely=0.57)#pack(side=TOP, fill=BOTH, expand=1)
+ 
     #--------------------------------------------------------------------------оцека тональности
     tonal_pos= Counter(tonal).keys()
     tonal_value=Counter(tonal).values()
